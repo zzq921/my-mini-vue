@@ -1,12 +1,5 @@
-import { extend } from "../shared"
 
-/*
- * @Author: zhaozhiqiang
- * @Date: 2022-03-03 22:37:11
- * @LastEditTime: 2022-03-08 20:47:00
- * @LastEditors: zhaozhiqiang
- * @Description: 
- */
+import { extend } from "../shared"
 class ReactiveEffect{
   private _fn:any
   deps = []

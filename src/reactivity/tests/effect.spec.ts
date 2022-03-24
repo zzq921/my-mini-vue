@@ -1,10 +1,5 @@
-/*
- * @Author: zhaozhiqiang
- * @Date: 2022-03-03 20:55:18
- * @LastEditTime: 2022-03-22 21:27:51
- * @LastEditors: zhaozhiqiang
- * @Description:
- */
+
+
 import { effect,stop } from '../effect'
 import {reactive} from '../reactive'
 
