@@ -6,7 +6,7 @@ let shouldTrack;
 export class ReactiveEffect{
   private _fn:any //内部的_fn()方法
   deps = []
-  active = true
+  active = true // avtive 属性控制stop方式执行的状态，stop执行其变为false
   onStop?:()=>void
   //public scheduler 外部能够获取到scheduler方法
   constructor(fn,public scheduler?) {
@@ -28,17 +28,22 @@ export class ReactiveEffect{
     return result
   }
   stop() {
+    //当this.active为true时，代表stop第一次执行。
     if(this.active) {
+      //清除所有的effect
       cleanupEffect(this)
+      //当stop方法之后执行之后，onStop存在则会被执行，onStop为用户传入的第二个参数，执行用户传入的回调，也就是stop方法的回调
       if(this.onStop) {
         this.onStop()
       }
+      //执行之后变为false，防止重复调用，优化性能。
       this.active = false
     }
     
   }
 }
 function cleanupEffect(effect) {
+  //取出effect中反向收集到的deps，循环删除dep中的effect
   effect.deps.forEach((dep:any)=>{
     dep.delete(effect)
   })
@@ -76,6 +81,7 @@ export function trackEffects(dep) {
   //此dep为所有与key有关的effect集合，收集到set结构的dep中。dep = [effect,effect,effect,effect]
   if(dep.has(activeEffect)) return
   dep.add(activeEffect)
+  //反向收集，当前activeEffect上挂载deps，来收集所有的dep
   activeEffect.deps.push(dep)
 }
 
@@ -116,11 +122,13 @@ export function effect(fn,options:any = {}) {
   _effect.run()
   //处理_effect指针，当前的实例的run方法
   const runner:any = _effect.run.bind(_effect)
+  //将当前_effect挂载到runner的effect上，方便stop方法获取。
   runner.effect = _effect
   //返回一个runner函数
   return runner
 }
 
 export function stop(runner) {
+  // runner就是一个effect实例，stop方法就是把dep中所有依赖的effect清空，指向ReactiveEffect重的stop方法
   runner.effect.stop()
 }
