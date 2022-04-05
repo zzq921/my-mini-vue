@@ -6,7 +6,7 @@ const get = createGetter()
 const set = createSetter()
 const readonlyGet = createGetter(true)
 const shallowReadonlyGet = createGetter(true,true)
-
+//抽象出createGetter 方法，相当于get方法收集依赖
 function createGetter(isReadonly=false,shallow = false) {
   return function get(target,key) {
     if(key === ReactiveFlags.IS_REACTIVE) {
@@ -18,7 +18,7 @@ function createGetter(isReadonly=false,shallow = false) {
     if(shallow) {
       return res
     }
-    if(isObject(res)) {
+    if(isObject(res)) {  
       return isReadonly ? readonly(res) : reactive(res)
     }
     if(!isReadonly) {
@@ -27,10 +27,11 @@ function createGetter(isReadonly=false,shallow = false) {
     return res
   }
 }
-
+//createSetter 方法，相当于set方法触发依赖
 function createSetter(isReadonly = false) {
   return function get(target,key,val) {
     let res = Reflect.set(target,key,val)
+    //触发依赖
     trigger(target,key)
     return res
   }

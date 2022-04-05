@@ -1,13 +1,14 @@
 
 import { extend } from "../shared"
 //
-let activeEffect; //一个fn函数
+let activeEffect; //一个当前effect
 let shouldTrack;
 export class ReactiveEffect{
-  private _fn:any
+  private _fn:any //内部的_fn()方法
   deps = []
   active = true
   onStop?:()=>void
+  //public scheduler 外部能够获取到scheduler方法
   constructor(fn,public scheduler?) {
     //接受fn方法
     this._fn = fn  
@@ -18,9 +19,12 @@ export class ReactiveEffect{
       return this._fn()
     }
     shouldTrack = true
+    //this代表当前effect 赋值给activeEffect
     activeEffect = this
     const result = this._fn();
     shouldTrack = false
+
+    //return 出返回值
     return result
   }
   stop() {
@@ -92,6 +96,7 @@ export function triggerEffects(dep) {
   for(let effect of dep) {
     //取出每一个effect，判断effect是否有第二个参数传入
     if(effect.scheduler) {
+      //如果存在，调用scheduler方法，也就是用户传过来的第二个回调函数fn2。即effect(function fn1(){},function fn2(){})
       effect.scheduler()
     }else{
       //如果没有第二个参数，直接进行依赖触发，执行run方法，run方法里会调用fn
@@ -109,8 +114,10 @@ export function effect(fn,options:any = {}) {
   //利用extend方法实现effect的第二个参数options的合并。
   extend(_effect,options)
   _effect.run()
+  //处理_effect指针，当前的实例的run方法
   const runner:any = _effect.run.bind(_effect)
   runner.effect = _effect
+  //返回一个runner函数
   return runner
 }
 
