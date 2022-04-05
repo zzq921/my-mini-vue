@@ -5,7 +5,7 @@ export const enum ReactiveFlags {
   IS_REACTIVE = '__v_isReactive',
   IS_READONLY = '__v_isReadonly'
 }
-
+//导出reactive对象
 export function reactive(raw) {
   return createActiveObject(raw,mutableHandlers)
 }
@@ -31,7 +31,8 @@ export function isProxy(val) {
 }
 
 
-
+//创建reactive对象的方法
 function createActiveObject(raw: any,baseHandlers) {
+  //通过Proxy实现对象数据的响应式监听
   return new Proxy(raw, baseHandlers)
 }
