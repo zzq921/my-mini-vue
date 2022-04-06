@@ -1,6 +1,6 @@
 import { mutableHandlers, readonlyHandlers,shallowReadonlyHandlers } from "./baseHandlers"
 
-
+//创建枚举集合，匹配isReactive和isReadonly
 export const enum ReactiveFlags {
   IS_REACTIVE = '__v_isReactive',
   IS_READONLY = '__v_isReadonly'
