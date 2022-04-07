@@ -2,7 +2,7 @@
 import { extend } from "../shared"
 //
 let activeEffect; //一个当前effect
-let shouldTrack;
+let shouldTrack; //定义变量，优化stop的应该被依赖收集的开关
 export class ReactiveEffect{
   private _fn:any //内部的_fn()方法
   deps = []
@@ -18,11 +18,12 @@ export class ReactiveEffect{
     if(!this.active) {
       return this._fn()
     }
-    shouldTrack = true
+    shouldTrack = true // 开关打开
     //this代表当前effect 赋值给activeEffect
     activeEffect = this
+    //执行effect中的_fn
     const result = this._fn();
-    shouldTrack = false
+    shouldTrack = false //关闭开关
 
     //return 出返回值
     return result
@@ -54,6 +55,7 @@ function cleanupEffect(effect) {
 let targetMap = new Map()
 export function track(target,key) {
   //targetMap -- depsMap -- dep
+  //当依赖收集时候，判断是否可被收集，当stop调用时候，开关是关闭状态，不可收集。
   if(!isTracking())return
   //通过目标对象的target获取 depsMap对象，此对象为map结构 key-dep
   let depsMap = targetMap.get(target)
@@ -84,7 +86,7 @@ export function trackEffects(dep) {
   //反向收集，当前activeEffect上挂载deps，来收集所有的dep
   activeEffect.deps.push(dep)
 }
-
+//是否可被收集的函数
 export function isTracking() {
   return shouldTrack && activeEffect !==undefined
 }

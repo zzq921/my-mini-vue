@@ -10,8 +10,10 @@ const shallowReadonlyGet = createGetter(true,true)
 function createGetter(isReadonly=false,shallow = false) {
   return function get(target,key) {
     if(key === ReactiveFlags.IS_REACTIVE) {
+      //isReactive的实现，如果匹配到且不是只读属性，则返回true，即!isReadonly
       return !isReadonly
     }else if(key === ReactiveFlags.IS_READONLY) {
+      //isReadonly的实现，如果匹配到是只读属性，则返回
       return isReadonly
     }
     let res = Reflect.get(target,key)
