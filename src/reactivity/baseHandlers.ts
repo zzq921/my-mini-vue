@@ -17,9 +17,11 @@ function createGetter(isReadonly=false,shallow = false) {
       return isReadonly
     }
     let res = Reflect.get(target,key)
+    //判断是否为shallow，直接返回值就好
     if(shallow) {
       return res
     }
+    //数据嵌套判断，如果是isReadonly，就用readonly包裹嵌套的深层数据，如果不是，就用reactive嵌套深层，使其成为响应式数据
     if(isObject(res)) {  
       return isReadonly ? readonly(res) : reactive(res)
     }
