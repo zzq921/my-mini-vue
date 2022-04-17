@@ -1,2 +1,6 @@
-import App from "./app";
-createApp(App).mount("#app");
+import { createApp } from "../../lib/zzq-mini-vue.esm.js";
+import { App } from "./App.js";
+
+const rootContainer = document.querySelector("#app");
+
+createApp(App).mount(rootContainer);
