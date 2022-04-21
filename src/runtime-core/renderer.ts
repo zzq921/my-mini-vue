@@ -42,7 +42,13 @@ function mountElement(vnode:any,container:any) {
   // props 通过循环props，设置元素自身的属性
   for(const key in props){
     const val = props[key]
-    el.setAttribute(key,val)
+    const isOn = (key:any) => /^on[A-Z]/.test(key)
+    if(isOn(key)) {
+      const event = key.slice(2).toLowerCase()
+      el.addEventListener(event,val)
+    }else{
+      el.setAttribute(key,val)
+    }
   }
   //最后把元素插入到容器container里面
   container.append(el)

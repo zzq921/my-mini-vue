@@ -8,6 +8,12 @@ export const App = {
       {
         id: "root",
         class: ["red", "blue"],
+        onClick() {
+          console.log("click");
+        },
+        onMousedown() {
+          console.log("Mousedown");
+        },
       },
       "hi," + this.msg //字符串类型
       //[h("p", { class: "red" }, "hi"), h("p", { class: "blue" }, "mini-vue")]
