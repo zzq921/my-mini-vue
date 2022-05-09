@@ -1,3 +1,4 @@
+import { isObject } from "../shared/index";
 import { mutableHandlers, readonlyHandlers,shallowReadonlyHandlers } from "./baseHandlers"
 
 //创建枚举集合，匹配isReactive和isReadonly
@@ -33,6 +34,10 @@ export function isProxy(val) {
 
 //创建reactive对象的方法
 function createActiveObject(raw: any,baseHandlers) {
+  if(!isObject(raw)) {
+    console.warn(`target:${raw}必须是一个对象`)
+    return
+  }
   //通过Proxy实现对象数据的响应式监听
   return new Proxy(raw, baseHandlers)
 }
